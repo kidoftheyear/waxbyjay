@@ -20,6 +20,14 @@ const galleryItems = [
   {
     image: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=800",
     label: "Showroom Shine"
+  },
+  {
+    image: "/gallery-6.jpg",
+    label: "Premium Wash"
+  },
+  {
+    image: "/gallery-7.jpg",
+    label: "Paint Correction"
   }
 ];
 
