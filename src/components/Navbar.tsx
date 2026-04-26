@@ -16,7 +16,7 @@ export default function Navbar() {
       <div className="hidden md:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-semibold opacity-60">
         <a href="#services" className="hover:opacity-100 transition-opacity">Services</a>
         <a href="#gallery" className="hover:opacity-100 transition-opacity">Gallery</a>
-        <a href="#contact" className="hover:text-red transition-colors text-red opacity-100 italic">Book Now</a>
+        <a href="sms:3343220554" className="hover:text-red transition-colors text-red opacity-100 italic">Book Now</a>
       </div>
     </motion.nav>
   );

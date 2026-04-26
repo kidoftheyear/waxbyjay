@@ -13,17 +13,20 @@ export default function Footer() {
         <div className="flex flex-wrap gap-12">
           <div>
             <span className="block text-[9px] uppercase opacity-40 mb-2 font-bold tracking-widest">Phone</span>
-            <span className="text-sm md:text-lg text-white font-mono">(334) 322-0554</span>
+            <a href="tel:3343220554" className="text-sm md:text-lg text-white font-mono hover:text-red transition-colors font-bold tracking-tighter">(334) 322-0554</a>
           </div>
           <div>
             <span className="block text-[9px] uppercase opacity-40 mb-2 font-bold tracking-widest">Email</span>
-            <span className="text-sm md:text-lg text-white font-mono lowercase italic">waxbyj19@gmail.com</span>
+            <a href="mailto:waxbyj19@gmail.com" className="text-sm md:text-lg text-white font-mono lowercase italic hover:text-red transition-colors">waxbyj19@gmail.com</a>
           </div>
         </div>
         <div className="flex gap-4">
-          <button className="px-8 py-4 border border-white/10 text-[10px] uppercase tracking-[0.4em] hover:bg-red hover:text-black hover:border-red transition-all font-bold">
+          <a 
+            href="sms:3343220554"
+            className="px-8 py-4 border border-white/10 text-[10px] uppercase tracking-[0.4em] hover:bg-red hover:text-black hover:border-red transition-all font-bold"
+          >
             Request Quote
-          </button>
+          </a>
         </div>
       </div>
       

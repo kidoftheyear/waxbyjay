@@ -14,21 +14,20 @@ export default function Hero({ onBookClick }: { onBookClick: () => void }) {
           <div className="absolute -top-16 left-0 h-1 w-24 bg-red"></div>
           
           <h1 className="text-[72px] md:text-[100px] leading-[0.85] font-serif font-bold mb-8 uppercase">
-            The Red <br/>
-            <span className="text-red italic">Standard</span> <br/>
-            of Shine.
+            Drive <span className="text-red italic">Clean,</span> <br/>
+            Drive <span className="text-red italic">Proud.</span>
           </h1>
           
           <p className="text-xl md:text-2xl font-light italic opacity-80 mb-10 border-l-2 border-red pl-6 max-w-xl leading-relaxed uppercase tracking-tighter">
             "Signed by Jay. Every finish is a masterwork, hand-crafted at your convenience."
           </p>
           
-          <button 
-            onClick={onBookClick}
+          <a 
+            href="sms:3343220554"
             className="w-fit px-12 py-6 bg-red text-black font-black uppercase tracking-[0.3em] text-xs hover:bg-white transition-colors"
           >
             Book Your Wax
-          </button>
+          </a>
         </motion.div>
       </div>
     </section>

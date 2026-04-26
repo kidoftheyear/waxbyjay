@@ -40,12 +40,12 @@ export default function Contact({ onBookClick }: { onBookClick: () => void }) {
               Available 7 days a week for inquiries and serious paint protection consultations.
             </p>
             
-            <button 
-              onClick={onBookClick}
-              className="px-12 py-6 bg-red text-black font-black uppercase tracking-[0.4em] text-xs hover:bg-white transition-all shadow-[15px_15px_0px_rgba(212,0,0,0.1)]"
+            <a 
+              href="sms:3343220554"
+              className="px-12 py-6 bg-red text-black font-black uppercase tracking-[0.4em] text-xs hover:bg-white transition-all shadow-[15px_15px_0px_rgba(212,0,0,0.1)] inline-block"
             >
               Request A Quote
-            </button>
+            </a>
           </div>
 
           <div className="grid grid-cols-1 gap-4">
