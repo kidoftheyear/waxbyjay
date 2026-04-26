@@ -1,5 +1,4 @@
 import { motion } from 'motion/react';
-import { Star, ArrowRight } from 'lucide-react';
 
 export default function Hero({ onBookClick }: { onBookClick: () => void }) {
   return (
@@ -22,12 +21,12 @@ export default function Hero({ onBookClick }: { onBookClick: () => void }) {
             "Signed by Jay. Every finish is a masterwork, hand-crafted at your convenience."
           </p>
           
-          <a 
-            href="sms:3343220554"
+          <button 
+            onClick={onBookClick}
             className="w-fit px-12 py-6 bg-red text-black font-black uppercase tracking-[0.3em] text-xs hover:bg-white transition-colors"
           >
             Book Your Wax
-          </a>
+          </button>
         </motion.div>
       </div>
     </section>

@@ -5,7 +5,7 @@ export default function Contact({ onBookClick }: { onBookClick: () => void }) {
   const contactInfo = [
     {
       icon: Phone,
-      label: "Call or Text",
+      label: "Call Now",
       value: "(334) 322-0554",
       sub: "Jaylon Young",
       action: "tel:3343220554"
@@ -40,12 +40,12 @@ export default function Contact({ onBookClick }: { onBookClick: () => void }) {
               Available 7 days a week for inquiries and serious paint protection consultations.
             </p>
             
-            <a 
-              href="sms:3343220554"
-              className="px-12 py-6 bg-red text-black font-black uppercase tracking-[0.4em] text-xs hover:bg-white transition-all shadow-[15px_15px_0px_rgba(212,0,0,0.1)] inline-block"
+            <button 
+              onClick={onBookClick}
+              className="px-12 py-6 bg-red text-black font-black uppercase tracking-[0.4em] text-xs hover:bg-white transition-all shadow-[15px_15px_0px_rgba(212,0,0,0.1)]"
             >
               Request A Quote
-            </a>
+            </button>
           </div>
 
           <div className="grid grid-cols-1 gap-4">
@@ -53,8 +53,6 @@ export default function Contact({ onBookClick }: { onBookClick: () => void }) {
               <a 
                 key={i}
                 href={info.action}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="group p-10 border border-white/10 bg-stealth-black/50 hover:border-red/40 transition-all flex items-center justify-between"
               >
                 <div className="flex items-center gap-8">

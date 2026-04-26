@@ -172,12 +172,12 @@ export default function Services({ onBookClick }: { onBookClick: () => void }) {
                 )}
               </div>
 
-              <a 
-                href="sms:3343220554"
-                className="mt-12 w-full py-4 border border-red/30 text-red text-[10px] font-black uppercase tracking-[0.4em] hover:bg-red hover:text-black transition-all text-center"
+              <button 
+                onClick={onBookClick}
+                className="mt-12 w-full py-4 border border-red/30 text-red text-[10px] font-black uppercase tracking-[0.4em] hover:bg-red hover:text-black transition-all"
               >
                 Select Package
-              </a>
+              </button>
             </motion.div>
           ))}
         </div>

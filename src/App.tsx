@@ -6,7 +6,7 @@ import JaysTouch from './components/JaysTouch';
 import Gallery from './components/Gallery';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import ComingSoonModal from './components/ComingSoonModal';
+import BookingModal from './components/BookingModal';
 
 export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,7 +15,7 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen bg-stealth-black overflow-x-hidden">
-      <Navbar />
+      <Navbar onBookClick={toggleModal} />
       
       <main>
         <Hero onBookClick={toggleModal} />
@@ -25,9 +25,9 @@ export default function App() {
         <Contact onBookClick={toggleModal} />
       </main>
 
-      <Footer />
+      <Footer onBookClick={toggleModal} />
       
-      <ComingSoonModal 
+      <BookingModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
       />

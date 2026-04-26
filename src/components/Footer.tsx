@@ -1,6 +1,6 @@
 import { Car } from 'lucide-react';
 
-export default function Footer() {
+export default function Footer({ onBookClick }: { onBookClick: () => void }) {
   return (
     <footer className="grid grid-cols-12 border-t border-white/10 bg-stealth-black">
       <div className="col-span-12 md:col-span-4 p-12 border-b md:border-b-0 md:border-r border-white/10">
@@ -21,12 +21,12 @@ export default function Footer() {
           </div>
         </div>
         <div className="flex gap-4">
-          <a 
-            href="sms:3343220554"
+          <button 
+            onClick={onBookClick}
             className="px-8 py-4 border border-white/10 text-[10px] uppercase tracking-[0.4em] hover:bg-red hover:text-black hover:border-red transition-all font-bold"
           >
             Request Quote
-          </a>
+          </button>
         </div>
       </div>
       
