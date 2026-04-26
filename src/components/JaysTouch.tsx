@@ -32,8 +32,8 @@ export default function JaysTouch() {
           
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-6">
-              <div className="h-px w-8 bg-gold/50" />
-              <span className="text-gold text-xs uppercase tracking-[0.4em] font-semibold">The Philosophy</span>
+              <div className="h-px w-8 bg-red/50" />
+              <span className="text-red text-xs uppercase tracking-[0.4em] font-semibold">The Philosophy</span>
             </div>
             
             <h2 className="text-5xl md:text-7xl font-serif mb-10 italic">Jay's Touch</h2>

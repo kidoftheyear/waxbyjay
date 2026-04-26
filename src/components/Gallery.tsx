@@ -42,7 +42,7 @@ export default function Gallery() {
               referrerPolicy="no-referrer"
             />
             <div className="absolute top-8 left-8 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-y-4 group-hover:translate-y-0">
-              <span className="text-gold text-[10px] uppercase tracking-[0.5em] font-bold">Finish Portfolio</span>
+              <span className="text-red text-[10px] uppercase tracking-[0.5em] font-bold">Finish Portfolio</span>
               <span className="text-white text-xl font-serif italic">{item.label}</span>
             </div>
           </motion.div>
