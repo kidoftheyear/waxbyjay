@@ -41,7 +41,7 @@ export default function Gallery() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className={`group relative h-96 border-r border-b border-white/10 overflow-hidden ${index === 0 ? 'lg:col-span-2 lg:row-span-2 h-full min-h-[500px]' : ''}`}
+            className={`group relative h-96 border-r border-b border-white/10 overflow-hidden ${index === 0 ? 'lg:col-span-2 lg:row-span-2 h-full min-h-[500px]' : index >= 5 ? 'lg:col-span-2' : ''}`}
           >
             <img 
               src={item.image} 
