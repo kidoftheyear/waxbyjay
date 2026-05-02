@@ -70,8 +70,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
     try {
       await emailjs.send(
-        'service_h1dfpwf', 
-        'template_grofezs', 
+        'service_p1hrvra', 
+        'template_1ms66a7', 
         templateParams, 
         'fnSX4oPPOShtc2cBm'
       );
