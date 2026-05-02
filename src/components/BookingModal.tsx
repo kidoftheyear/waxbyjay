@@ -69,13 +69,11 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     };
 
     try {
-      // NOTE: You will need to replace these with your own EmailJS keys
-      // Service ID, Template ID, and Public Key
       await emailjs.send(
-        'service_id', 
-        'template_id', 
+        'service_h1dfpwf', 
+        'template_grofezs', 
         templateParams, 
-        'public_key'
+        'fnSX4oPPOShtc2cBm'
       );
 
       setIsSuccess(true);
@@ -94,8 +92,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       }, 4000);
     } catch (error) {
       console.error('Email error:', error);
-      // Even if it fails, we'll show success for the demo or advise the user
-      alert('To finish the email setup, you just need to add your EmailJS keys in the code!');
+      alert('There was an issue sending the email. Please check your EmailJS configuration.');
     } finally {
       setIsSubmitting(false);
     }
