@@ -29,11 +29,17 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!supabase) {
+      console.warn('Supabase not configured');
+      setLoading(false);
+      return;
+    }
     checkUser();
     fetchBookings();
   }, []);
 
   async function checkUser() {
+    if (!supabase) return;
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       navigate('/admin/login');
@@ -41,6 +47,7 @@ export default function AdminDashboard() {
   }
 
   async function fetchBookings() {
+    if (!supabase) return;
     setLoading(true);
     const { data, error } = await supabase
       .from('bookings')
@@ -53,6 +60,7 @@ export default function AdminDashboard() {
   }
 
   async function updateStatus(id: string, status: 'approved' | 'rejected') {
+    if (!supabase) return;
     const { error } = await supabase
       .from('bookings')
       .update({ status })
@@ -63,7 +71,7 @@ export default function AdminDashboard() {
   }
 
   async function handleLogout() {
-    await supabase.auth.signOut();
+    if (supabase) await supabase.auth.signOut();
     navigate('/admin/login');
   }
 
@@ -76,6 +84,18 @@ export default function AdminDashboard() {
     pending: bookings.filter(b => b.status === 'pending').length,
     revenue: bookings.filter(b => b.status === 'approved').reduce((acc, b) => acc + b.total_price, 0)
   };
+
+  if (!supabase) {
+    return (
+      <div className="min-h-screen bg-stealth-black flex items-center justify-center p-6 text-center">
+        <div className="max-w-md w-full bg-stealth-charcoal border border-white/10 p-10">
+          <h2 className="text-2xl font-serif text-white uppercase italic mb-4">Database Not Connected</h2>
+          <p className="text-white/40 text-xs uppercase tracking-widest mb-8">Please add your Supabase credentials to the .env file to enable the admin dashboard.</p>
+          <button onClick={() => navigate('/')} className="w-full py-4 bg-red text-black font-black uppercase tracking-widest text-[10px]">Return Home</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-stealth-black text-white">
