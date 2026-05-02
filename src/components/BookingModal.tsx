@@ -1,26 +1,96 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Send } from 'lucide-react';
-import { useState } from 'react';
+import { X, Send, Calendar as CalendarIcon, CheckCircle2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { DayPicker } from 'react-day-picker';
+import { format } from 'date-fns';
+import 'react-day-picker/dist/style.css';
+import { supabase } from '../lib/supabase';
 
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+const services = [
+  { name: 'Level 1 Basic', carPrice: 80, truckPrice: 115 },
+  { name: 'Level 2 Standard', carPrice: 130, truckPrice: 150 },
+  { name: 'Level 3 Deluxe', carPrice: 190, truckPrice: 215 },
+  { name: 'Paint Protection / Ceramic', carPrice: 0, truckPrice: 0, manual: true },
+  { name: 'Other / Inquiry', carPrice: 0, truckPrice: 0, manual: true }
+];
+
 export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    service: 'Level 1 Basic'
+    service: 'Level 1 Basic',
+    vehicleType: 'Car',
+    hasDogHair: false,
+    date: undefined as Date | undefined
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(80);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  useEffect(() => {
+    const selectedService = services.find(s => s.name === formData.service);
+    if (!selectedService || selectedService.manual) {
+      setTotalPrice(0);
+      return;
+    }
+
+    let base = formData.vehicleType === 'Car' ? selectedService.carPrice : selectedService.truckPrice;
+    if (formData.hasDogHair) base += 50; // Dynamic upcharge
+    setTotalPrice(base);
+  }, [formData.service, formData.vehicleType, formData.hasDogHair]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const message = `Booking Request:\nName: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nService: ${formData.service}`;
-    const encodedMessage = encodeURIComponent(message);
-    window.location.href = `sms:3343220554?body=${encodedMessage}`;
-    onClose();
+    if (!formData.date) {
+      alert("Please select a date");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase.from('bookings').insert([{
+        client_name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        service_type: formData.service,
+        vehicle_type: formData.vehicleType,
+        scheduled_date: formData.date.toISOString(),
+        has_dog_hair: formData.hasDogHair,
+        total_price: totalPrice,
+        status: 'pending'
+      }]);
+
+      if (error) throw error;
+
+      setIsSuccess(true);
+      setTimeout(() => {
+        setIsSuccess(false);
+        onClose();
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          service: 'Level 1 Basic',
+          vehicleType: 'Car',
+          hasDogHair: false,
+          date: undefined
+        });
+      }, 3000);
+    } catch (error) {
+      console.error('Error submitting booking:', error);
+      alert('Failed to submit booking. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -38,7 +108,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative bg-stealth-charcoal border border-white/10 p-8 md:p-12 max-w-xl w-full shadow-2xl"
+            className="relative bg-stealth-charcoal border border-white/10 p-8 md:p-10 max-w-2xl w-full shadow-2xl overflow-y-auto max-h-[90vh]"
           >
             <button
               onClick={onClose}
@@ -47,72 +117,149 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
               <X size={24} />
             </button>
             
-            <div className="mb-8">
-              <span className="text-red text-[10px] uppercase tracking-[0.5em] font-bold block mb-4">Request Service</span>
-              <h3 className="text-4xl font-serif text-white uppercase italic">Book Your <br/>Session</h3>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold block mb-2">Full Name</label>
-                <input 
-                  required
-                  type="text"
-                  placeholder="Enter your name"
-                  className="w-full bg-stealth-black border border-white/10 p-4 text-sm text-white focus:border-red/50 outline-none transition-colors uppercase tracking-widest"
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                />
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold block mb-2">Email Address</label>
-                  <input 
-                    required
-                    type="email"
-                    placeholder="email@example.com"
-                    className="w-full bg-stealth-black border border-white/10 p-4 text-sm text-white focus:border-red/50 outline-none transition-colors uppercase tracking-widest"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold block mb-2">Phone Number</label>
-                  <input 
-                    required
-                    type="tel"
-                    placeholder="(000) 000-0000"
-                    className="w-full bg-stealth-black border border-white/10 p-4 text-sm text-white focus:border-red/50 outline-none transition-colors uppercase tracking-widest"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold block mb-2">Type of Service</label>
-                <select 
-                  className="w-full bg-stealth-black border border-white/10 p-4 text-sm text-white focus:border-red/50 outline-none transition-colors uppercase tracking-widest appearance-none"
-                  value={formData.service}
-                  onChange={(e) => setFormData({...formData, service: e.target.value})}
+            {isSuccess ? (
+              <div className="py-20 text-center">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="w-20 h-20 bg-red rounded-full flex items-center justify-center mx-auto mb-8"
                 >
-                  <option>Level 1 Basic</option>
-                  <option>Level 2 Standard</option>
-                  <option>Level 3 Deluxe</option>
-                  <option>Paint Protection / Ceramic</option>
-                  <option>Other / Inquiry</option>
-                </select>
+                  <CheckCircle2 className="text-black w-10 h-10" />
+                </motion.div>
+                <h3 className="text-3xl font-serif text-white uppercase italic mb-4">Request Sent!</h3>
+                <p className="text-white/40 text-xs uppercase tracking-widest">We will contact you shortly to confirm your booking.</p>
               </div>
+            ) : (
+              <>
+                <div className="mb-8">
+                  <span className="text-red text-[10px] uppercase tracking-[0.5em] font-bold block mb-4">Precision Booking</span>
+                  <h3 className="text-4xl font-serif text-white uppercase italic">Reserve Your <br/>Detail</h3>
+                </div>
 
-              <button
-                type="submit"
-                className="w-full py-6 bg-red text-black font-black uppercase tracking-[0.5em] text-[10px] hover:bg-white transition-all shadow-[0_0_30px_rgba(212,0,0,0.2)] flex items-center justify-center gap-3 group"
-              >
-                Send Request
-                <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </form>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold block mb-2">Full Name</label>
+                      <input 
+                        required
+                        type="text"
+                        className="w-full bg-stealth-black border border-white/10 p-4 text-sm text-white focus:border-red/50 outline-none transition-colors uppercase tracking-widest"
+                        value={formData.name}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold block mb-2">Vehicle Type</label>
+                      <select 
+                        className="w-full bg-stealth-black border border-white/10 p-4 text-sm text-white focus:border-red/50 outline-none transition-colors uppercase tracking-widest appearance-none"
+                        value={formData.vehicleType}
+                        onChange={(e) => setFormData({...formData, vehicleType: e.target.value})}
+                      >
+                        <option>Car</option>
+                        <option>Truck / SUV</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold block mb-2">Email Address</label>
+                      <input 
+                        required
+                        type="email"
+                        className="w-full bg-stealth-black border border-white/10 p-4 text-sm text-white focus:border-red/50 outline-none transition-colors uppercase tracking-widest"
+                        value={formData.email}
+                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold block mb-2">Phone Number</label>
+                      <input 
+                        required
+                        type="tel"
+                        className="w-full bg-stealth-black border border-white/10 p-4 text-sm text-white focus:border-red/50 outline-none transition-colors uppercase tracking-widest"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold block mb-2">Type of Service</label>
+                    <select 
+                      className="w-full bg-stealth-black border border-white/10 p-4 text-sm text-white focus:border-red/50 outline-none transition-colors uppercase tracking-widest appearance-none"
+                      value={formData.service}
+                      onChange={(e) => setFormData({...formData, service: e.target.value})}
+                    >
+                      {services.map(s => <option key={s.name}>{s.name}</option>)}
+                    </select>
+                  </div>
+
+                  <div className="relative">
+                    <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold block mb-2">Preferred Date</label>
+                    <button
+                      type="button"
+                      onClick={() => setShowCalendar(!showCalendar)}
+                      className="w-full bg-stealth-black border border-white/10 p-4 text-sm text-white focus:border-red/50 outline-none transition-colors uppercase tracking-widest flex items-center justify-between"
+                    >
+                      {formData.date ? format(formData.date, 'PPP') : 'Select a date'}
+                      <CalendarIcon size={18} className="text-red" />
+                    </button>
+                    
+                    {showCalendar && (
+                      <div className="absolute z-10 mt-2 bg-stealth-charcoal border border-white/10 p-4 shadow-2xl right-0 left-0 md:left-auto">
+                        <DayPicker
+                          mode="single"
+                          selected={formData.date}
+                          onSelect={(date) => {
+                            setFormData({...formData, date});
+                            setShowCalendar(false);
+                          }}
+                          disabled={{ before: new Date() }}
+                          styles={{
+                            caption: { color: 'white', textTransform: 'uppercase', letterSpacing: '0.1em' },
+                            head_cell: { color: 'rgba(255,255,255,0.4)', fontSize: '10px' },
+                            day: { color: 'white' },
+                            day_selected: { backgroundColor: '#D40000', color: 'black', fontWeight: 'bold' },
+                            day_today: { color: '#D40000', fontWeight: 'bold' }
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-3 p-4 bg-white/5 border border-white/10">
+                    <input 
+                      type="checkbox"
+                      id="dogHair"
+                      className="w-5 h-5 accent-red"
+                      checked={formData.hasDogHair}
+                      onChange={(e) => setFormData({...formData, hasDogHair: e.target.checked})}
+                    />
+                    <label htmlFor="dogHair" className="text-[10px] uppercase tracking-widest font-bold text-white/60 cursor-pointer">
+                      Excessive Dog Hair Removal (+$50)
+                    </label>
+                  </div>
+
+                  <div className="flex items-center justify-between py-6 border-t border-white/10">
+                    <div>
+                      <span className="text-[10px] uppercase tracking-widest text-white/40 font-bold block">Estimated Total</span>
+                      <span className="text-4xl font-serif text-white italic">
+                        {totalPrice > 0 ? `$${totalPrice}` : 'Quote Req.'}
+                      </span>
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="px-10 py-6 bg-red text-black font-black uppercase tracking-[0.5em] text-[10px] hover:bg-white transition-all shadow-[0_0_30px_rgba(212,0,0,0.2)] flex items-center gap-3 group disabled:opacity-50"
+                    >
+                      {isSubmitting ? 'Sending...' : 'Request to Book'}
+                      <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
+                </form>
+              </>
+            )}
           </motion.div>
         </div>
       )}
